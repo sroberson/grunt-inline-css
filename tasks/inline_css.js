@@ -8,52 +8,71 @@
 
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+    // Please see the Grunt documentation for more information regarding task
+    // creation: http://gruntjs.com/creating-tasks
 
-  var juice = require('juice');
+    var juice = require('juice');
 
-  grunt.registerMultiTask('inlinecss', 'Takes an html file with css link and turns inline.  Great for emails.', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options();
-    var done = this.async();
-    var index = 0;
-    var count = this.files.length;
+    grunt.registerMultiTask('inlinecss', 'Takes an html file with css link and turns inline.  Great for emails.', function () {
+        // Merge task-specific and/or target-specific options with these defaults.
+        var options = this.options();
+        var done = this.async();
+        var index = 0;
+        var count = this.files.length;
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
+        // Iterate over all specified file groups.
+        this.files.forEach(function (f) {
 
-      var filepath = f.src.toString();
-      if (typeof filepath !== 'string' || filepath === '') {
-        grunt.log.error('src must be a single string');
-        return false;
-      }
+            var filepath = f.src.toString();
+            if (typeof filepath !== 'string' || filepath === '') {
+                grunt.log.error('src must be a single string');
+                return false;
+            }
 
-      if (!grunt.file.exists(filepath)) {
-        grunt.log.error('Source file "' + filepath + '" not found.');
-        return false;
-      }
+            if (!grunt.file.exists(filepath)) {
+                grunt.log.error('Source file "' + filepath + '" not found.');
+                return false;
+            }
 
-      juice(filepath, options, function(err, html) {
+            /**
+             * Updated - Juice 1.0.0 compatible
+             * TODO: could use a bit of work
+             */
+            var juicedFile = juice(grunt.file.read(filepath), options);
 
-        if (err) {
-          return grunt.log.error(err);
-        }
+            if (juicedFile) {
+                grunt.file.write(f.dest, juicedFile);
+                grunt.log.writeln('File "' + f.dest + '" created.');
+                index++;
+                if (index === count) done();
+            } else {
+                return grunt.log.error("File " + f.dest + " error");
+                return false;
+            }
 
-        grunt.file.write(f.dest, html);
-        grunt.log.writeln('File "' + f.dest + '" created.');
+            /**
+             * Original - Juice 0.4.0 compatible
+            juice(filepath, options, function (err, html) {
+
+                if (err) {
+                    return grunt.log.error(err);
+                }
+
+                grunt.file.write(f.dest, html);
+                grunt.log.writeln('File "' + f.dest + '" created.');
 
 
-        index++;
-        if (index === count) {
-          done();
-        }
+                index++;
+                if (index === count) {
+                    done();
+                }
 
-      });
+            });
+            */
 
+        });
     });
-  });
 
 };
