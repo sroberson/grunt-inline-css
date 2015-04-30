@@ -39,6 +39,9 @@ grunt.initConfig({
 ### Update
 I've just updated this plugin to be able to receive a "globbing pattern" and an output directory instead of having to list the files out, directly:
 
+
+You can see available options [here](https://github.com/LearnBoost/juice#juicefilepath-options-callback)
+
 ```js
 grunt.initConfig({
     inlinecss: {
@@ -51,8 +54,6 @@ grunt.initConfig({
     }
 })
 ```
-
-You can see available options [here](https://github.com/LearnBoost/juice#juicefilepath-options-callback)
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
