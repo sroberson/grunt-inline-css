@@ -50,6 +50,7 @@ grunt.initConfig({
         }
     }
 })
+```
 
 You can see available options [here](https://github.com/LearnBoost/juice#juicefilepath-options-callback)
 
