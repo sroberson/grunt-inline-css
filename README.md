@@ -36,11 +36,12 @@ grunt.initConfig({
 })
 ```
 
-### Update
-I've just updated this plugin to be able to receive a "globbing pattern" and an output directory instead of having to list the files out, directly:
-
 
 You can see available options [here](https://github.com/LearnBoost/juice#juicefilepath-options-callback)
+
+
+### Update
+I've just updated this plugin to be able to receive a "globbing pattern" and an output directory instead of having to list the files out, directly:
 
 ```js
 grunt.initConfig({
