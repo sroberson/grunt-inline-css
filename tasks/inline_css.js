@@ -11,73 +11,91 @@
 var juice = require('juice')
     , path = require('path')
     , async = require('async')
-    , count
-    , done;
+    , reGlob = /.*\*.*/
+    , count;
 
 
 module.exports = function (grunt) {
 
     var options = {
-        underscoresAsPartials: true
+        outputSuffix: 'inline'
     };
 
-    var compileInlineFile = function (filepath, destination, nextFile, options) {
+    var not = function (predicate) { return function () { return !predicate.apply(null, arguments); }; };
+    var and = function (predicates) {
+        return function () {
+            var bool = true, index = 0, len = predicates.length, predicate;
+            while (bool && index < len) {
+                predicate = predicates[index++];
+                bool = bool && predicate.apply(null, arguments);
+            }
+            return bool;
+        };
+    };
 
-        /*
-            This plugin has been changed to handle a directory globbing pattern,
-            instead of having to list out the files directly.
+    var isUnexpandedGlob = function (file) {
 
-            The directory listing is working, but the single file does not currently work.
-        */
-        var juicedFile,
-            outputFilename = path.resolve(destination, path.basename(filepath));
+        var filename = file.orig.src[0],
+            expand = file.orig.expand;
 
-        grunt.log.debug("outputfile is " + outputFilename);
+        return reGlob.test(filename) && !expand;
+    };
 
-        juicedFile = juice(grunt.file.read(filepath), options);
+    var fileExists = function (f) { return grunt.file.exists(f); };
+
+    var createFilename = function (destination, filepath) {
+        return path.resolve(destination, path.basename(filepath, '.html') + '-' + options.outputSuffix + '.html');
+    };
+
+    var compileInlineFile = function (infile, outfile) {
+
+        var juicedFile;
+
+        grunt.log.debug("infile is " + infile);
+        grunt.log.debug("outfile will be " + outfile);
+
+        juicedFile = juice(grunt.file.read(infile), options);
 
         //grunt.log.debug("Derived html: " + juicedFile);
-        grunt.log.ok("Writing to : " + path.basename(filepath));
+
+        grunt.log.ok("Writing to : " + path.basename(infile));
+        grunt.log.debug("Writing to : " + outfile);
 
         if (juicedFile) {
-            grunt.file.write(outputFilename, juicedFile );
+            grunt.file.write(outfile, juicedFile );
             count++;
         } else {
-            return grunt.log.error("File " + outputFilename + " error");
+            grunt.log.error("File " + outfile + " error");
             return false;
         }
-        nextFile();
     };
 
     grunt.registerMultiTask('inlinecss', 'Takes an html file with css link and turns inline.  Great for emails.', function () {
 
-        var opts = grunt.util._.defaults(this.options(), options);
+        var files = this.files
+            , opts = grunt.util._.defaults(this.options(), options);
         count = 0;
 
-        var done = this.async();
+        files.forEach(function (file) {
 
-        async.each(this.files, function(fileGlob, nextGlob) {
+            // if file is a globbing pattern, then src might be a list of several files
+            // otherwise file.src will contain a list of one file
+            var currentSetOfInputFiles = file.src,
+                destination = file.dest,
+                predicates = [],
+                outputFilename;
 
-            var destination = fileGlob.dest;
-            grunt.log.debug("FileGlob: " + fileGlob.src);
+            predicates.push(fileExists);
 
-            async.each(fileGlob.src, function(filepath, nextFile) {
+            currentSetOfInputFiles
+                .filter(and(predicates))
+                .forEach(function (filepath) {
+                    outputFilename = isUnexpandedGlob(file) ?
+                        createFilename(destination, filepath)
+                        : destination;
 
-                if (grunt.file.exists(filepath) || grunt.file.exists(filepath)) {
-                    compileInlineFile(filepath, destination, nextFile, opts);
-                } else {
-                    nextGlob();
-                }
-
-            }, function() {
-                // When we are done with all files in this glob
-                // continue to the next glob
-                nextGlob();
-            });
-        }, function() {
-            // When we are done with all globs
-            // call done to tell the Grunt task we are done
-            done();
+                    compileInlineFile(filepath, outputFilename);
+                });
         });
 
         grunt.log.ok("Compiled " + count + " files.");

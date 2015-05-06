@@ -41,16 +41,20 @@ You can see available options [here](https://github.com/LearnBoost/juice#juicefi
 
 
 ### Update
-I've just updated this plugin to be able to receive a "globbing pattern" and an output directory instead of having to list the files out, directly:
+I've just updated this plugin to be able to receive a "globbing pattern" and an output directory instead of having to list the files out, directly.  I also added an option to say what the new file should be named.  The default will be to have the original name of the file suffixed by 'inline' such that the file name might end up as promotion-inline.html.
 
 ```js
 grunt.initConfig({
     inlinecss: {
         main: {
             options: {
+                //outputSuffix: 'inline' // 'inline' is the default
             },
+            //files: {
+            //    'src-emails/1a-enhancement-inline.html': 'src-emails/1a-enhancement.html'
+            //}
             src: ['src-emails/*.html'],
-            dest: 'src-emails/inline/'
+            dest: 'src-emails/'
         }
     }
 })
