@@ -1,8 +1,9 @@
 /*
  * grunt-inline-css
- * https://github.com/jgallen23/grunt-inline-css
+ * https://github.com/sroberson/grunt-inline-css
+ *  forked from https://github.com/jgallen23/grunt-inline-css
  *
- * Copyright (c) 2013 Greg Allen
+ * Copyright (c) 2015 Scott Roberson
  * Licensed under the MIT license.
  */
 
