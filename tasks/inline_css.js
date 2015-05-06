@@ -10,7 +10,6 @@
 
 var juice = require('juice')
     , path = require('path')
-    , async = require('async')
     , reGlob = /.*\*.*/
     , count;
 
