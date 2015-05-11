@@ -2,13 +2,13 @@
   "name": "grunt-inline-css",
   "description": "Takes an html file with css link and turns inline.  Great for emails.",
   "version": "0.1.5",
-  "homepage": "https://github.com/jgallen23/grunt-inline-css",
+  "homepage": "https://github.com/sroberson/grunt-inline-css",
   "author": {
     "name": "Greg Allen, Jack Wearden"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/jgallen23/grunt-inline-css.git"
+    "url": "git+https://github.com/sroberson/grunt-inline-css"
   },
   "bugs": {
     "url": "https://github.com/jgallen23/grunt-inline-css/issues"
