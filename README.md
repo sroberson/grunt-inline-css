@@ -48,7 +48,7 @@ grunt.initConfig({
     inlinecss: {
         main: {
             options: {
-                //outputSuffix: 'inline' // 'inline' is the default
+                //outputDir: 'inline' // 'inline' is the default
             },
             //files: {
             //    'src-emails/1a-enhancement-inline.html': 'src-emails/1a-enhancement.html'

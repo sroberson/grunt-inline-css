@@ -18,7 +18,7 @@ var juice = require('juice')
 module.exports = function (grunt) {
 
     var options = {
-        outputSuffix: 'inline'
+        outputDir: 'inline'
     };
 
     var not = function (predicate) { return function () { return !predicate.apply(null, arguments); }; };
@@ -44,7 +44,7 @@ module.exports = function (grunt) {
     var fileExists = function (f) { return grunt.file.exists(f); };
 
     var createFilename = function (destination, filepath) {
-        return path.resolve(destination, path.basename(filepath, '.html') + '-' + options.outputSuffix + '.html');
+        return path.resolve(destination, options.outputDir, path.basename(filepath, '.html') + '.html');
     };
 
     var compileInlineFile = function (infile, outfile) {
